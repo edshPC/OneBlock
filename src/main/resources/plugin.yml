@@ -1,20 +1,20 @@
 #name, main, version and api are required
-name: ExamplePlugin
-main: cn.powernukkitx.exampleplugin.ExamplePlugin
+name: OneBlock
+main: edsh.oneblock.OneBlockPlugin
 #remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
 version: "1.0.0"
 api: ["1.0.0"]
 load: POSTWORLD
-author: Nukkit Project
+author: edshPC
 # Authors and author will be added together in one list.
-authors: ["Example", "Another"]
-description: Example plugin showing the API
+authors: ["edshPC"]
+description: OneBlock plugin
 website: https://github.com/PowerNukkitX/ExamplePlugin-Maven
 # These dependencies are required for the plugin to start.
 #depend: ["OtherPlugin", "ThisPlugin"]
 # These dependencies are not required.
-softdepend: ["PluginA", "PluginB"]
+softdepend: []
 # Log prefix in console
-prefix: "Example"
+prefix: "OneBlock"
 # Plugin will be loaded before these. Any cyclic loadbefore's or dependencies's will throw errors!
-loadbefore: ["ImportantPlugin"]
+loadbefore: []
