@@ -28,7 +28,7 @@ public class OneBlockPlugin extends PluginBase {
         I18N = PluginI18nManager.register(this);
         //register the command of plugin
         this.getServer().getCommandMap().register("oneblockplugin", new CreateGenerator());
-        //dbHelper = new DBHelper("generators");
+
         db = new Database("oneblock.db");
 
     }

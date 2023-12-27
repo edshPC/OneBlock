@@ -11,7 +11,6 @@ import edsh.oneblock.util.Scheduler;
 import edsh.oneblock.util.WeightedRandomBag;
 
 public class BlockGenerator {
-    //public static BlockGenerator instance;
     final WeightedRandomBag<Item> blockWeights = new WeightedRandomBag<>();
 
     private final Position position;
@@ -39,13 +38,11 @@ public class BlockGenerator {
     }
 
     public void update() {
-        Block inWorld = level.getBlock(position);
+        Block inWorld = position.getLevelBlock();
         if(!Block.equals(currentBlock, inWorld)) {
             setBlock();
         }
     }
-
-
 
 
     public Vector3 getPosition() {
