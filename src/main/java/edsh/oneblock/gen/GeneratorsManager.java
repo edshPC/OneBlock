@@ -1,5 +1,7 @@
 package edsh.oneblock.gen;
 
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockID;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
@@ -32,7 +34,7 @@ public class GeneratorsManager {
         }, 20);
     }
 
-    public static void loadGenerator(Position pos) {
+    public static BlockGenerator loadGenerator(Position pos) {
         BlockGenerator gen = new BlockGenerator(pos);
         for(Map.Entry<Item, Double> e : defaultBlockWeights.entrySet()) {
             gen.blockWeights.addEntry(e.getKey(), e.getValue());
@@ -40,6 +42,9 @@ public class GeneratorsManager {
         Vector3 vec = pos.floor();
 
         loadedGenerators.put(vec, gen);
+
+        pos.getLevel().setBlock(pos.add(0, -1), Block.get(BlockID.BEDROCK));
+        return gen;
     }
 
     public static void destroyBlockHandle(BlockBreakEvent event) {

@@ -45,7 +45,7 @@ public class BlockGenerator {
     }
 
 
-    public Vector3 getPosition() {
+    public Position getPosition() {
         return position;
     }
 }
