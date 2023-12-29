@@ -14,7 +14,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <project.jar.directory>D:\mcpe\PowerNukkitX-1.20.30\plugins</project.jar.directory>
+        <server.directory>D:\mcpe\PowerNukkitX-1.20.30</server.directory>
     </properties>
 
     <repositories>
@@ -34,6 +34,21 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.44.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ru.dragonestia.dguard</groupId>
+            <artifactId>DGuard</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${server.directory}/plugins/DGuard.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>cn.yescallop.essentialsnk</groupId>
+            <artifactId>essentialsnk</artifactId>
+            <version>1.9.2</version>
+            <scope>system</scope>
+            <systemPath>${server.directory}/plugins/EssentialsNK.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -8,6 +8,7 @@ import cn.nukkit.command.utils.CommandLogger;
 import cn.nukkit.level.Position;
 import edsh.oneblock.OneBlockPlugin;
 import edsh.oneblock.island.IslandManager;
+import ru.dragonestia.dguard.region.PlayerRegionManager;
 
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
         //Set the alias for this command
         this.setAliases(new String[]{"is"});
 
-        this.setPermission("");
+        this.setPermission("oneblock.is");
 
         /*
          * The following begins to set the command parameters, first need to clean,
@@ -67,6 +68,7 @@ public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
     @Override
     public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
         IslandManager.createPlayerIsland(sender.asPlayer());
+
         return 1;
     }
 }

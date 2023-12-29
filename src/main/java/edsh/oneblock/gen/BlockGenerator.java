@@ -39,7 +39,7 @@ public class BlockGenerator {
 
     public void update() {
         Block inWorld = position.getLevelBlock();
-        if(!Block.equals(currentBlock, inWorld)) {
+        if(!Block.equals(currentBlock, inWorld) && !inWorld.isSolid()) {
             setBlock();
         }
     }

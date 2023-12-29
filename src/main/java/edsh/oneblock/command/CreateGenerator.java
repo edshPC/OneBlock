@@ -29,7 +29,7 @@ public class CreateGenerator extends PluginCommand<OneBlockPlugin> {
         //Set the alias for this command
         this.setAliases(new String[]{});
 
-        this.setPermission("op");
+        this.setPermission("oneblock.c");
 
         /*
          * The following begins to set the command parameters, first need to clean,
@@ -74,7 +74,7 @@ public class CreateGenerator extends PluginCommand<OneBlockPlugin> {
         Vector3 pos = list.getResult(0);
         Level level = sender.getPosition().level;
 
-        GeneratorsManager.loadGenerator(Position.fromObject(pos, level));
+        GeneratorsManager.loadGenerator(Position.fromObject(pos, level), 1);
 
         return 1;
     }

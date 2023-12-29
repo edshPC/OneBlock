@@ -34,7 +34,7 @@ public class GeneratorsManager {
         }, 20);
     }
 
-    public static BlockGenerator loadGenerator(Position pos) {
+    public static BlockGenerator loadGenerator(Position pos, int lvl) {
         BlockGenerator gen = new BlockGenerator(pos);
         for(Map.Entry<Item, Double> e : defaultBlockWeights.entrySet()) {
             gen.blockWeights.addEntry(e.getKey(), e.getValue());

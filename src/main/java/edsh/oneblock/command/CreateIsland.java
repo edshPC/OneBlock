@@ -30,7 +30,7 @@ public class CreateIsland extends PluginCommand<OneBlockPlugin> {
         //Set the alias for this command
         this.setAliases(new String[]{});
 
-        this.setPermission("op");
+        this.setPermission("oneblock.createisland");
 
         /*
          * The following begins to set the command parameters, first need to clean,
@@ -70,7 +70,7 @@ public class CreateIsland extends PluginCommand<OneBlockPlugin> {
      */
     @Override
     public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
-        Position pos = IslandManager.createIsland();
+        Position pos = IslandManager.createNewIsland();
         log.output(true);
         log.addSuccess("Island created on " + pos);
         return 1;
