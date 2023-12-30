@@ -37,6 +37,12 @@ public class EventListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player pl = event.getPlayer();
+        IslandManager.tryUnloadPlayerIsland(pl);
+    }
+
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerLoginEvent(PlayerLoginEvent event) {

@@ -3,14 +3,12 @@ package edsh.oneblock;
 import cn.nukkit.lang.PluginI18n;
 import cn.nukkit.lang.PluginI18nManager;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import edsh.oneblock.command.CreateGenerator;
-import edsh.oneblock.command.CreateIsland;
+import edsh.oneblock.command.AdminIsland;
 import edsh.oneblock.command.PlayerIsland;
 import edsh.oneblock.data.Database;
 import edsh.oneblock.gen.GeneratorsManager;
-import edsh.oneblock.island.Island;
 import edsh.oneblock.island.IslandManager;
 import edsh.oneblock.util.EventListener;
 import edsh.oneblock.util.Scheduler;
@@ -33,7 +31,7 @@ public class OneBlockPlugin extends PluginBase {
 
         var commands = this.getServer().getCommandMap();
         commands.register("CreateGenerator", new CreateGenerator());
-        commands.register("CreateIsland", new CreateIsland());
+        commands.register("CreateIsland", new AdminIsland());
         commands.register("Island", new PlayerIsland());
 
         Util.db = new Database("oneblock.db");

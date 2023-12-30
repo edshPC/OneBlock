@@ -2,23 +2,16 @@ package edsh.oneblock.command;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.command.tree.ParamList;
 import cn.nukkit.command.utils.CommandLogger;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.math.Vector3;
 import edsh.oneblock.OneBlockPlugin;
-import edsh.oneblock.gen.GeneratorsManager;
-import edsh.oneblock.island.Island;
-import edsh.oneblock.island.IslandManager;
 
 import java.util.Map;
 
-public class CreateIsland extends PluginCommand<OneBlockPlugin> {
+public class AdminIsland extends PluginCommand<OneBlockPlugin> {
 
-    public CreateIsland() {
+    public AdminIsland() {
         /*
         1.the name of the command must be lowercase
         2.Here the description is set in with the key in the language file,Look at en_US.lang or zh_CN.lang.
@@ -70,9 +63,7 @@ public class CreateIsland extends PluginCommand<OneBlockPlugin> {
      */
     @Override
     public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
-        Position pos = IslandManager.createNewIsland();
-        log.output(true);
-        log.addSuccess("Island created on " + pos);
+
         return 1;
     }
 }

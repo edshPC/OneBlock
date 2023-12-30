@@ -74,8 +74,6 @@ public class CreateGenerator extends PluginCommand<OneBlockPlugin> {
         Vector3 pos = list.getResult(0);
         Level level = sender.getPosition().level;
 
-        GeneratorsManager.loadGenerator(Position.fromObject(pos, level), 1);
-
         return 1;
     }
 }

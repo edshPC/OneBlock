@@ -2,9 +2,7 @@ package edsh.oneblock.island;
 
 import cn.nukkit.Player;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
-import cn.yescallop.essentialsnk.EssentialsAPI;
 import edsh.oneblock.data.PlayerData;
 import edsh.oneblock.util.Util;
 import ru.dragonestia.dguard.DGuard;
@@ -28,6 +26,7 @@ public class IslandManager {
     }
 
     public static boolean tryLoadIsland(long id) {
+        if(islands.containsKey(id)) return true;
         Island island = Util.db.getIsland(id);
         if(island == null) return false;
         island.load();
@@ -35,9 +34,7 @@ public class IslandManager {
         return true;
     }
 
-
-
-    public static Position createNewIsland() {
+    public static Island createNewIsland() {
         Position pos = new Position(0,0,0, level);
         if(islands.containsKey(lastId)) {
             Position previous = islands.get(lastId).getPosition();
@@ -48,30 +45,33 @@ public class IslandManager {
             }
         }
 
-        Island island = new Island(pos);
+        Island island = new Island(pos, ++lastId);
         island.load();
-        islands.put(++lastId, island);
-        Util.db.saveIsland(island, lastId);
+        islands.put(lastId, island);
+        Util.db.saveIsland(island);
 
-        return pos;
+        return island;
     }
 
     public static boolean tryLoadPlayerIsland(Player pl) {
         PlayerData data = Util.db.getPlayerData(pl.getUniqueId());
         if(data == null) return false;
 
-        return tryLoadIsland(data.island_id);
+        if(tryLoadIsland(data.island_id)) {
+            islands.get(data.island_id).online(pl);
+            return true;
+        }
+        return false;
     }
 
     public static void createPlayerIsland(Player pl) {
-        Position pos = createNewIsland();
-        Position home = pos.add(0.5, 1, 0.5);
+        Island island = createNewIsland();
+        island.addPlayer(pl.getUniqueId());
+        island.online(pl);
+        Position pos = island.getPosition();
 
-        var essentials = EssentialsAPI.getInstance();
-        essentials.setHome(pl, "is", Location.fromObject(home, home.level));
-
-        Area area = new Area(new Point(pos.add(-999, 0, -999)), new Point(pos.add(999, 0, 999)));
-
+        Area area = new Area(new Point(pos.add(-999, 0, -999)),
+                            new Point(pos.add(999, 0, 999)));
         try {
             new PlayerRegionManager(pl, DGuard.getInstance()).createRegion(pl.getName() + "'s island", area, pos.level);
             pl.sendMessage("§eРегион был успешно создан!");
@@ -79,15 +79,21 @@ public class IslandManager {
             pl.sendMessage("§c"+ex.getMessage()+". Не удалось создать регион острова. Пожалуйста, обратитесь к админу");
         }
 
-        pl.teleport(home);
+        Util.savePlayer(pl, island.getId(), true);
 
-        PlayerData data = new PlayerData();
-        data.uuid = pl.getUniqueId();
-        data.name = pl.getName();
-        data.island_id = lastId;
-        data.is_owner = true;
-        Util.db.savePlayerData(data);
+    }
 
+    public static boolean tryUnloadPlayerIsland(Player pl) {
+        PlayerData data = Util.db.getPlayerData(pl.getUniqueId());
+        if(data == null || !islands.containsKey(data.island_id)) return false;
+        Island island = islands.get(data.island_id);
+        if(island.offline(pl)) {
+            islands.remove(data.island_id);
+            island.unload();
+            Util.db.saveIsland(island);
+            return true;
+        }
+        return false;
     }
 
 }

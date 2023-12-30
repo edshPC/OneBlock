@@ -78,13 +78,14 @@ public class Database {
                 LinkedList<UUID> allPlayers = new LinkedList<>();
                 st = conn.prepareStatement(SQL.GET_ALL_PLAYERS);
                 st.setLong(1, id);
-                res = st.executeQuery();
-                while (res.next()) {
-                    String uuid = res.getString("uuid");
+                var plres = st.executeQuery();
+                while (plres.next()) {
+                    String uuid = plres.getString("uuid");
                     allPlayers.add(UUID.fromString(uuid));
                 }
                 return new Island(
                         pos,
+                        id,
                         res.getInt("lvl"),
                         res.getLong("xp"),
                         allPlayers
@@ -96,11 +97,11 @@ public class Database {
         return null;
     }
 
-    public void saveIsland(Island island, long id) {
+    public void saveIsland(Island island) {
         try {
             var st = conn.prepareStatement(SQL.SET_ISLAND);
             int i=1;
-            st.setLong(i++, id);
+            st.setLong(i++, island.getId());
             Position pos = island.getPosition();
             st.setLong(i++, (long) pos.x);
             st.setLong(i++, (long) pos.y);
