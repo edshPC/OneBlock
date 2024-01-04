@@ -6,5 +6,4 @@ public class PlayerData {
     public UUID uuid;
     public String name;
     public long island_id = -1;
-    public boolean is_owner = false;
 }

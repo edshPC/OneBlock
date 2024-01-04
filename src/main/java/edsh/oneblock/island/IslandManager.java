@@ -8,6 +8,7 @@ import edsh.oneblock.util.Util;
 import ru.dragonestia.dguard.DGuard;
 import ru.dragonestia.dguard.exceptions.RegionException;
 import ru.dragonestia.dguard.region.PlayerRegionManager;
+import ru.dragonestia.dguard.region.Region;
 import ru.dragonestia.dguard.util.Area;
 import ru.dragonestia.dguard.util.Point;
 
@@ -17,12 +18,23 @@ public class IslandManager {
 
     public static Level level;
     private static final HashMap<Long, Island> islands = new HashMap<>();
+    private static final HashMap<Player, Island> islandsByPlayer = new HashMap<>();
+    private static final HashMap<Integer, Long> levelsXp = new HashMap<>();
+    private static final HashMap<Player, Island> invitations = new HashMap<>();
+
+    private static Position lastPos;
     private static long lastId;
 
     public static void init() {
         level = Util.server.getLevelByName(Util.config.getString("islands-world-name"));
+        var levelsConfig = Util.config.getSection("levels");
+        for(String key : levelsConfig.getKeys()) {
+            levelsXp.put(Integer.valueOf(key), levelsConfig.getLong(key));
+        }
+
         lastId = Util.db.getLastIslandId();
-        tryLoadIsland(lastId);
+        lastPos = Util.db.getIslandLastPos();
+        lastPos.level = level;
     }
 
     public static boolean tryLoadIsland(long id) {
@@ -35,20 +47,17 @@ public class IslandManager {
     }
 
     public static Island createNewIsland() {
-        Position pos = new Position(0,0,0, level);
-        if(islands.containsKey(lastId)) {
-            Position previous = islands.get(lastId).getPosition();
-            pos = previous.add(2000);
-            if(pos.x > 100000) {
-                pos.x = 0;
-                pos.y += 2000;
-            }
+        Position pos = lastPos.add(2000);
+        if(pos.x > 100000) {
+            pos.x = 0;
+            pos.y += 2000;
         }
 
         Island island = new Island(pos, ++lastId);
         island.load();
         islands.put(lastId, island);
         Util.db.saveIsland(island);
+        lastPos = pos.clone();
 
         return island;
     }
@@ -58,15 +67,20 @@ public class IslandManager {
         if(data == null) return false;
 
         if(tryLoadIsland(data.island_id)) {
-            islands.get(data.island_id).online(pl);
+            Island island = islands.get(data.island_id);
+            island.online(pl);
+            islandsByPlayer.put(pl, island);
             return true;
         }
         return false;
     }
 
-    public static void createPlayerIsland(Player pl) {
+    public static boolean createPlayerIsland(Player pl) {
+        if(tryLoadPlayerIsland(pl)) return false;
+
         Island island = createNewIsland();
-        island.addPlayer(pl.getUniqueId());
+        island.setOwner(pl);
+        islandsByPlayer.put(pl, island);
         island.online(pl);
         Position pos = island.getPosition();
 
@@ -74,26 +88,78 @@ public class IslandManager {
                             new Point(pos.add(999, 0, 999)));
         try {
             new PlayerRegionManager(pl, DGuard.getInstance()).createRegion(pl.getName() + "'s island", area, pos.level);
-            pl.sendMessage("§eРегион был успешно создан!");
         } catch (RegionException ex) {
             pl.sendMessage("§c"+ex.getMessage()+". Не удалось создать регион острова. Пожалуйста, обратитесь к админу");
         }
 
-        Util.savePlayer(pl, island.getId(), true);
-
+        Util.savePlayer(pl, island.getId());
+        return true;
     }
 
     public static boolean tryUnloadPlayerIsland(Player pl) {
-        PlayerData data = Util.db.getPlayerData(pl.getUniqueId());
-        if(data == null || !islands.containsKey(data.island_id)) return false;
-        Island island = islands.get(data.island_id);
+        if(!islandsByPlayer.containsKey(pl)) return false;
+        Island island = islandsByPlayer.get(pl);
+        islandsByPlayer.remove(pl);
         if(island.offline(pl)) {
-            islands.remove(data.island_id);
+            islands.remove(island.getId());
             island.unload();
             Util.db.saveIsland(island);
             return true;
         }
         return false;
+    }
+
+    public static boolean tryLeavePlayer(Player pl) {
+        if(!islandsByPlayer.containsKey(pl)) return false;
+        Island island = islandsByPlayer.get(pl);
+        islandsByPlayer.remove(pl);
+        island.offline(pl);
+
+        if(island.removePlayer(pl.getUniqueId())) {
+            var manager = new PlayerRegionManager(pl, DGuard.getInstance());
+            manager.getRegions().forEach(Region::remove);
+            islands.remove(island.getId());
+            island.unload();
+        }
+
+        Util.savePlayer(pl, -1);
+        return true;
+    }
+
+    public static Island getIsland(Player pl) {
+        return islandsByPlayer.get(pl);
+    }
+
+    public static long getRequiredXp(int lvl) {
+        if(lvl <= 0) lvl = 1;
+        while (!levelsXp.containsKey(lvl)) lvl--;
+        return levelsXp.get(lvl);
+    }
+
+    public static void invitePlayer(Player from, Player to, Island is) {
+        if(islandsByPlayer.containsKey(to)) {
+            from.sendMessage("§cПриглашенный игрок уже имеет свой остров! Ему нужно покинуть его, прежде чем вы сможете кинуть запрос.");
+            return;
+        }
+        invitations.put(to, is);
+        to.sendMessage("§aИгрок §b" + from.getName() + " §r§aпригласил вас на свой остров!\nВведи §b/is accept §aчтобы принять приглшение или §b/is deny §aчтобы отклонить.\nВнимание! Вы можете состоять тольно на одном острове");
+    }
+
+    public static void manageInvitation(Player pl, boolean accept) {
+        Island is = invitations.remove(pl);
+        if(is == null) {
+            pl.sendMessage("§cУ вас нет приглашений на остров :(");
+            return;
+        }
+        if(!accept) {
+            pl.sendMessage("§eВы отказались от приглашения");
+            return;
+        }
+        String msg = "§b" + pl.getName() + " §r§aприсоединился к острову, добро пожаловать!";
+        is.online(pl);
+        islandsByPlayer.put(pl, is);
+        Util.savePlayer(pl, is.getId());
+        for(Player p : is.getOnline()) p.sendMessage(msg);
     }
 
 }

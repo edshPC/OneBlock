@@ -5,6 +5,7 @@ public class SQL {
 """
 CREATE TABLE IF NOT EXISTS island(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    owner TEXT,
     x INT NOT NULL,
     y INT NOT NULL,
     z INT NOT NULL,
@@ -16,8 +17,7 @@ CREATE TABLE IF NOT EXISTS island(
 CREATE TABLE IF NOT EXISTS player(
     uuid TEXT PRIMARY KEY,
     name TEXT,
-    island INT REFERENCES island(id) ON DELETE SET NULL,
-    is_owner INT
+    island INT REFERENCES island(id) ON DELETE SET NULL
 );
 """,
 """
@@ -36,6 +36,9 @@ CREATE TABLE IF NOT EXISTS account(
 
     static final String LAST_ISLAND =
             "SELECT seq FROM sqlite_sequence WHERE name='island';";
+
+    static final String MAX_COORDS =
+            "SELECT max(x), max(y) FROM island;";
 
     static final String GET_ISLAND =
             "SELECT * FROM island WHERE id=?;";

@@ -1,13 +1,19 @@
 package edsh.oneblock.command;
 
+import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
+import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.command.tree.ParamList;
 import cn.nukkit.command.utils.CommandLogger;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import cn.yescallop.essentialsnk.EssentialsAPI;
 import edsh.oneblock.OneBlockPlugin;
+import edsh.oneblock.island.Island;
 import edsh.oneblock.island.IslandManager;
+import edsh.oneblock.util.Util;
 import ru.dragonestia.dguard.region.PlayerRegionManager;
 
 import java.util.Map;
@@ -15,23 +21,13 @@ import java.util.Map;
 public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
 
     public PlayerIsland() {
-        /*
-        1.the name of the command must be lowercase
-        2.Here the description is set in with the key in the language file,Look at en_US.lang or zh_CN.lang.
-        This can send different command description to players of different language.
-        You must extends PluginCommand to have this feature.
-        */
+
         super("island", "Управление островом", OneBlockPlugin.INSTANCE);
 
-        //Set the alias for this command
         this.setAliases(new String[]{"is"});
 
         this.setPermission("oneblock.is");
 
-        /*
-         * The following begins to set the command parameters, first need to clean,
-         * because NK will fill in several parameters by default, we do not need.
-         * */
         this.getCommandParameters().clear();
 
         /*
@@ -41,33 +37,84 @@ public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
          * 3.Optional arguments must be used at the end of the subcommand or consecutively.
          */
         this.getCommandParameters().put("pattern1", new CommandParameter[]{
-                CommandParameter.newEnum("operation", new String[]{"create"})
+                CommandParameter.newEnum("operation", new String[]{
+                        "create",
+                        "leave",
+                        "home",
+                        "sethome",
+                        "accept",
+                        "deny"
+                })
                 //CommandParameter.newType("coords", false, CommandParamType.BLOCK_POSITION)
         });
-        /*
-         * You'll find two `execute()` methods,
-         * where `boolean execute()` is the old NK method,
-         * and if you want to use the new `int execute()`,
-         * you must add `enableParamTree` at the end of the constructor.
-         *
-         * Note that you can only choose one of these two execute methods
-         */
+
+        this.getCommandParameters().put("pattern2", new CommandParameter[]{
+                CommandParameter.newEnum("operation", new String[]{
+                        "invite"
+                }),
+                CommandParameter.newType("player", false, CommandParamType.TARGET)
+        });
+
         this.enableParamTree();
     }
 
-    /**
-     * This method is executed only if the command syntax is correct, which means you don't need to verify the parameters yourself.
-     * In addition, before executing the command, will check whether the executor has the permission for the command.
-     * If these conditions are not met, an error message is automatically displayed.
-     *
-     * @param sender       The sender of the command
-     * @param commandLabel Command label. For example, if `/test 123` is used, the value is `test`
-     * @param result       The parsed matching subcommand pattern
-     * @param log          The command output tool, which is used to output info, can be controlled by the world's sendCommandFeedback rule
-     */
+
     @Override
     public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
-        IslandManager.createPlayerIsland(sender.asPlayer());
+        Player pl = sender.asPlayer();
+        Island island = IslandManager.getIsland(pl);
+        boolean hasIsland = island != null;
+        boolean isOwner = hasIsland && island.isOwner(pl);
+        var list = result.getValue();
+
+        switch ((String) list.getResult(0)) {
+            case "create" -> {
+                if (IslandManager.createPlayerIsland(pl)) {
+                    pl.sendMessage("§aОстров был успешно создан! Напиши §b/is home §aчтобы телепортироавться");
+                } else {
+                    pl.sendMessage("§cУ вас уже есть остров!");
+                }
+            }
+            case "leave" -> {
+                if (IslandManager.tryLeavePlayer(pl)) {
+                    pl.sendMessage("§bВы покинули остров!");
+                } else {
+                    pl.sendMessage("§cУ вас нет острова!");
+                }
+            }
+            case "home" -> {
+                Location home = EssentialsAPI.getInstance().getHome(pl, "is");
+                if (home == null) pl.sendMessage("§cВам не принадлежит никакого острова!");
+                else pl.teleport(home);
+            }
+            case "sethome" -> {
+                if (!hasIsland) {
+                    pl.sendMessage("§cВам не принадлежит никакого острова!");
+                    break;
+                }
+                Location home = pl.getLocation();
+                island.setHome(home);
+                pl.sendMessage("§aДом установлен в новом месте!");
+            }
+
+            case "invite" -> {
+                if (!isOwner) {
+                    pl.sendMessage("§cВам не принадлежит никакого острова или вы не владелец!");
+                    break;
+                }
+                Player[] pls = list.getResult(1);
+                if (pls.length != 1) {
+                    pl.sendMessage("§cВы можете пригласить только одного игрока!");
+                    break;
+                }
+                IslandManager.invitePlayer(pl, pls[0], island);
+            }
+
+            case "accept" -> IslandManager.manageInvitation(pl, true);
+
+            case "deny" -> IslandManager.manageInvitation(pl, false);
+
+        }
 
         return 1;
     }

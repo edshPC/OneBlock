@@ -8,7 +8,9 @@ import edsh.oneblock.util.Util;
 
 import java.io.File;
 import java.sql.*;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.UUID;
 
 public class Database {
@@ -64,6 +66,22 @@ public class Database {
         return 0;
     }
 
+    public Position getIslandLastPos() {
+        try {
+            var st = conn.prepareStatement(SQL.MAX_COORDS);
+            var res = st.executeQuery();
+            if (res.next())
+                return new Position(
+                        res.getLong(1),
+                        0,
+                        res.getLong(2)
+                );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return new Position();
+    }
+
     public Island getIsland(long id) {
         try {
             var st = conn.prepareStatement(SQL.GET_ISLAND);
@@ -75,7 +93,7 @@ public class Database {
                         res.getLong("y"),
                         res.getLong("z")
                 );
-                LinkedList<UUID> allPlayers = new LinkedList<>();
+                Set<UUID> allPlayers = new LinkedHashSet<>();
                 st = conn.prepareStatement(SQL.GET_ALL_PLAYERS);
                 st.setLong(1, id);
                 var plres = st.executeQuery();
@@ -88,6 +106,7 @@ public class Database {
                         id,
                         res.getInt("lvl"),
                         res.getLong("xp"),
+                        UUID.fromString(res.getString("owner")),
                         allPlayers
                 );
             }
@@ -100,7 +119,7 @@ public class Database {
     public void saveIsland(Island island) {
         try {
             var st = conn.prepareStatement(SQL.SET_ISLAND);
-            int i=1;
+            int i = 1;
             st.setLong(i++, island.getId());
             Position pos = island.getPosition();
             st.setLong(i++, (long) pos.x);
@@ -125,7 +144,6 @@ public class Database {
                 data.uuid = uuid;
                 data.name = res.getString("name");
                 data.island_id = res.getLong("island");
-                data.is_owner = res.getBoolean("is_owner");
                 return data;
             }
         } catch (SQLException e) {
@@ -137,11 +155,10 @@ public class Database {
     public void savePlayerData(PlayerData playerData) {
         try {
             var st = conn.prepareStatement(SQL.SET_PLAYER);
-            int i=1;
+            int i = 1;
             st.setString(i++, playerData.uuid.toString());
             st.setString(i++, playerData.name);
             st.setLong(i++, playerData.island_id);
-            st.setBoolean(i++, playerData.is_owner);
             st.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);

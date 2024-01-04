@@ -20,12 +20,11 @@ public class Util {
         return login.getDeviceId();
     }
 
-    public static void savePlayer(Player pl, long island, boolean owner) {
+    public static void savePlayer(Player pl, long island) {
         PlayerData data = new PlayerData();
         data.uuid = pl.getUniqueId();
         data.name = pl.getName();
         data.island_id = island;
-        data.is_owner = owner;
         db.savePlayerData(data);
     }
 
