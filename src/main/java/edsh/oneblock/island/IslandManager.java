@@ -5,12 +5,6 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import edsh.oneblock.data.PlayerData;
 import edsh.oneblock.util.Util;
-import ru.dragonestia.dguard.DGuard;
-import ru.dragonestia.dguard.exceptions.RegionException;
-import ru.dragonestia.dguard.region.PlayerRegionManager;
-import ru.dragonestia.dguard.region.Region;
-import ru.dragonestia.dguard.util.Area;
-import ru.dragonestia.dguard.util.Point;
 
 import java.util.HashMap;
 
@@ -84,13 +78,7 @@ public class IslandManager {
         island.online(pl);
         Position pos = island.getPosition();
 
-        Area area = new Area(new Point(pos.add(-999, 0, -999)),
-                            new Point(pos.add(999, 0, 999)));
-        try {
-            new PlayerRegionManager(pl, DGuard.getInstance()).createRegion(pl.getName() + "'s island", area, pos.level);
-        } catch (RegionException ex) {
-            pl.sendMessage("§c"+ex.getMessage()+". Не удалось создать регион острова. Пожалуйста, обратитесь к админу");
-        }
+        //TODO: rg creation
 
         Util.savePlayer(pl, island.getId());
         return true;
@@ -116,8 +104,7 @@ public class IslandManager {
         island.offline(pl);
 
         if(island.removePlayer(pl.getUniqueId())) {
-            var manager = new PlayerRegionManager(pl, DGuard.getInstance());
-            manager.getRegions().forEach(Region::remove);
+            // TODO: rg remove
             islands.remove(island.getId());
             island.unload();
         }
@@ -160,6 +147,9 @@ public class IslandManager {
         islandsByPlayer.put(pl, is);
         Util.savePlayer(pl, is.getId());
         for(Player p : is.getOnline()) p.sendMessage(msg);
+        pl.sendMessage("§b/is home §aчтобы попасть на остров");
+
+        //TODO region add
     }
 
 }

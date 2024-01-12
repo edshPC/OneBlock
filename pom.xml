@@ -37,13 +37,6 @@
         </dependency>
 
         <dependency>
-            <groupId>ru.dragonestia.dguard</groupId>
-            <artifactId>DGuard</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${server.directory}/plugins/DGuard.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>cn.yescallop.essentialsnk</groupId>
             <artifactId>essentialsnk</artifactId>
             <version>1.9.2</version>

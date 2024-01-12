@@ -24,7 +24,7 @@ public class Island {
     private long xp;
     private long xpRequired;
 
-    private UUID owner;
+    UUID owner;
     private final Set<UUID> allPlayers;
     private final Set<Player> online = new LinkedHashSet<>();
 
@@ -104,7 +104,6 @@ public class Island {
 
     public void addPlayer(UUID uuid) {
         if (!allPlayers.add(uuid)) return;
-
         setHome(home);
     }
 

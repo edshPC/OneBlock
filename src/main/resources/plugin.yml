@@ -11,7 +11,7 @@ authors: ["edshPC"]
 description: OneBlock plugin
 website: https://github.com/PowerNukkitX/ExamplePlugin-Maven
 # These dependencies are required for the plugin to start.
-#depend: ["OtherPlugin", "ThisPlugin"]
+depend: ["EssentialsNK"]
 # These dependencies are not required.
 softdepend: []
 # Log prefix in console
