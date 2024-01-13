@@ -44,13 +44,12 @@ public class IslandManager {
         Position pos = lastPos.add(2000);
         if(pos.x > 100000) {
             pos.x = 0;
-            pos.y += 2000;
+            pos.z += 2000;
         }
 
         Island island = new Island(pos, ++lastId);
         island.load();
         islands.put(lastId, island);
-        Util.db.saveIsland(island);
         lastPos = pos.clone();
 
         return island;
@@ -81,13 +80,14 @@ public class IslandManager {
         //TODO: rg creation
 
         Util.savePlayer(pl, island.getId());
+        Util.db.saveIsland(island);
         return true;
     }
 
     public static boolean tryUnloadPlayerIsland(Player pl) {
         if(!islandsByPlayer.containsKey(pl)) return false;
-        Island island = islandsByPlayer.get(pl);
-        islandsByPlayer.remove(pl);
+        Island island = islandsByPlayer.remove(pl);
+
         if(island.offline(pl)) {
             islands.remove(island.getId());
             island.unload();
@@ -99,8 +99,7 @@ public class IslandManager {
 
     public static boolean tryLeavePlayer(Player pl) {
         if(!islandsByPlayer.containsKey(pl)) return false;
-        Island island = islandsByPlayer.get(pl);
-        islandsByPlayer.remove(pl);
+        Island island = islandsByPlayer.remove(pl);
         island.offline(pl);
 
         if(island.removePlayer(pl.getUniqueId())) {
@@ -129,6 +128,7 @@ public class IslandManager {
             return;
         }
         invitations.put(to, is);
+        from.sendMessage("§aВы пригласили игрока §b" + to.getName() + " §r§aк себе на остров!");
         to.sendMessage("§aИгрок §b" + from.getName() + " §r§aпригласил вас на свой остров!\nВведи §b/is accept §aчтобы принять приглшение или §b/is deny §aчтобы отклонить.\nВнимание! Вы можете состоять тольно на одном острове");
     }
 
@@ -139,6 +139,7 @@ public class IslandManager {
             return;
         }
         if(!accept) {
+            for(Player p : is.getOnline()) p.sendMessage("§e" + pl.getName() + " §r§cотказался от приглашения на остров");
             pl.sendMessage("§eВы отказались от приглашения");
             return;
         }

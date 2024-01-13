@@ -33,7 +33,7 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player pl = event.getPlayer();
         if(!IslandManager.tryLoadPlayerIsland(pl)) {
-            pl.sendMessage("У вас нет своего острова! Напиши /is create чтобы создать его или скажи другу чтобы пригласил к себя!");
+            pl.sendMessage("§eУ вас нет своего острова! Напиши /is create чтобы создать его или скажи другу чтобы пригласил к себя!");
         }
     }
 

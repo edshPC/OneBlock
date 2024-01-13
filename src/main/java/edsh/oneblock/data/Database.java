@@ -121,6 +121,7 @@ public class Database {
             var st = conn.prepareStatement(SQL.SET_ISLAND);
             int i = 1;
             st.setLong(i++, island.getId());
+            st.setString(i++, island.getOwner().toString());
             Position pos = island.getPosition();
             st.setLong(i++, (long) pos.x);
             st.setLong(i++, (long) pos.y);

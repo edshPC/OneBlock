@@ -22,6 +22,10 @@
             <id>jitpack.io</id>
             <url>https://www.jitpack.io</url>
         </repository>
+        <repository>
+            <id>SRegionProtector-master</id>
+            <url>https://raw.github.com/SergeyDertan/SRegionProtector/mvn-repo/</url>
+        </repository>
     </repositories>
          
     <dependencies>
@@ -42,6 +46,11 @@
             <version>1.9.2</version>
             <scope>system</scope>
             <systemPath>${server.directory}/plugins/EssentialsNK.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>sergeydertan.sregionprotector</groupId>
+            <artifactId>SRegionProtector</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

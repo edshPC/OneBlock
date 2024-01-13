@@ -38,19 +38,19 @@ CREATE TABLE IF NOT EXISTS account(
             "SELECT seq FROM sqlite_sequence WHERE name='island';";
 
     static final String MAX_COORDS =
-            "SELECT max(x), max(y) FROM island;";
+            "SELECT max(x), z FROM island WHERE z=(SELECT max(z) FROM island);";
 
     static final String GET_ISLAND =
             "SELECT * FROM island WHERE id=?;";
 
     static final String SET_ISLAND =
-            "INSERT OR REPLACE INTO island(id, x, y, z, lvl, xp) values (?, ?, ?, ?, ?, ?);";
+            "INSERT OR REPLACE INTO island(id, owner, x, y, z, lvl, xp) values (?, ?, ?, ?, ?, ?, ?);";
 
     static final String GET_PLAYER =
             "SELECT * FROM player WHERE uuid=?;";
 
     static final String SET_PLAYER =
-            "INSERT OR REPLACE INTO player(uuid, name, island, is_owner) values (?, ?, ?, ?);";
+            "INSERT OR REPLACE INTO player(uuid, name, island) values (?, ?, ?);";
 
     static final String GET_ALL_PLAYERS =
             "SELECT uuid FROM player WHERE island=?;";

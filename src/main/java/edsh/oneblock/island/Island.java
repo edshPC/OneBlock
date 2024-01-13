@@ -1,6 +1,8 @@
 package edsh.oneblock.island;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.BossBarColor;
@@ -24,7 +26,7 @@ public class Island {
     private long xp;
     private long xpRequired;
 
-    UUID owner;
+    private UUID owner;
     private final Set<UUID> allPlayers;
     private final Set<Player> online = new LinkedHashSet<>();
 
@@ -38,7 +40,8 @@ public class Island {
         this.owner = owner;
         this.allPlayers = allPlayers;
 
-        home = EssentialsAPI.getInstance().getHome(owner, "is");
+        if(owner != null)
+            home = EssentialsAPI.getInstance().getHome(owner, "is");
         if (home == null)
             home = Location.fromObject(position.add(0.5, 1, 0.5), position.level);
     }
@@ -119,6 +122,10 @@ public class Island {
 
     void setOwner(Player pl) {
         this.owner = pl.getUniqueId();
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 
     public Position getPosition() {

@@ -13,6 +13,7 @@ import edsh.oneblock.OneBlockPlugin;
 import edsh.oneblock.island.Island;
 import edsh.oneblock.island.IslandManager;
 
+import java.util.List;
 import java.util.Map;
 
 public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
@@ -99,12 +100,12 @@ public class PlayerIsland extends PluginCommand<OneBlockPlugin> {
                     pl.sendMessage("§cВам не принадлежит никакого острова или вы не владелец!");
                     break;
                 }
-                Player[] pls = list.getResult(1);
-                if (pls.length != 1) {
+                List<Player> pls = list.getResult(1);
+                if (pls.size() != 1) {
                     pl.sendMessage("§cВы можете пригласить только одного игрока!");
                     break;
                 }
-                IslandManager.invitePlayer(pl, pls[0], island);
+                IslandManager.invitePlayer(pl, pls.get(0), island);
             }
 
             case "accept" -> IslandManager.manageInvitation(pl, true);
