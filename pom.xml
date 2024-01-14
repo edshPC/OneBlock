@@ -51,6 +51,7 @@
             <groupId>sergeydertan.sregionprotector</groupId>
             <artifactId>SRegionProtector</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

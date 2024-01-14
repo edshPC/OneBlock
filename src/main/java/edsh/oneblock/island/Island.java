@@ -18,10 +18,10 @@ import java.util.UUID;
 
 public class Island {
 
+    private final long id;
     private BlockGenerator generator;
     private final Position position;
     private Location home;
-    private long id;
     private int lvl;
     private long xp;
     private long xpRequired;
@@ -64,10 +64,11 @@ public class Island {
     }
 
     public void updateInfo() {
+        float percentage = Math.max(((float) xp / xpRequired) * 100, 1);
         for (Player pl : online) {
             DummyBossBar bossBar = new DummyBossBar.Builder(pl)
                     .color(BossBarColor.PURPLE)
-                    .length(((float) xp / xpRequired) * 100)
+                    .length(percentage)
                     .text("§bУровень острова: §l§e" + lvl + "§r§b, Опыт: §e" + xp + "/" + xpRequired)
                     .build();
             pl.getDummyBossBars().values().forEach(DummyBossBar::destroy);
@@ -92,6 +93,10 @@ public class Island {
         updateInfo();
     }
 
+    public boolean isOnline(Player pl) {
+        return online.contains(pl);
+    }
+
     public boolean offline(Player pl) {
         online.remove(pl);
         pl.getDummyBossBars().values().forEach(DummyBossBar::destroy);
@@ -103,6 +108,7 @@ public class Island {
         for (UUID uuid : allPlayers) {
             essentials.setHome(uuid, "is", home);
         }
+        this.home = home;
     }
 
     public void addPlayer(UUID uuid) {

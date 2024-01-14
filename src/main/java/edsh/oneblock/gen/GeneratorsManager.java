@@ -70,15 +70,15 @@ public class GeneratorsManager {
     }
 
     public static void destroyBlockHandle(BlockBreakEvent event) {
+        if(event.isCancelled()) return;
         Vector3 pos = event.getBlock().floor();
 
-        if(loadedGenerators.containsKey(pos)) {
-            BlockGenerator gen = loadedGenerators.get(pos);
-            gen.onDestroy(event.getPlayer());
-            event.getPlayer().giveItem(event.getDrops());
-            event.setDrops(Item.EMPTY_ARRAY);
-            //event.setCancelled();
-        }
+        BlockGenerator gen = loadedGenerators.get(pos);
+        if(gen == null) return;
+
+        gen.onDestroy(event.getPlayer());
+        event.getPlayer().giveItem(event.getDrops());
+        event.setDrops(Item.EMPTY_ARRAY);
     }
 
 

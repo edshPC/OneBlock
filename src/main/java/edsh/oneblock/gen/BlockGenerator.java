@@ -38,7 +38,7 @@ public class BlockGenerator {
             pl.breakingBlockFace = BlockFace.UP;
         }, 0);
 
-        island.increaseXp();
+        if(island.isOnline(pl)) island.increaseXp();
     }
 
     public void update() {

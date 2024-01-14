@@ -7,9 +7,10 @@ import edsh.oneblock.island.Island;
 import edsh.oneblock.util.Util;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 

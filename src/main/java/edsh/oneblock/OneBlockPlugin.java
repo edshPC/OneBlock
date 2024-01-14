@@ -49,8 +49,6 @@ public class OneBlockPlugin extends PluginBase {
         Util.config = new Config(new File(getDataFolder(), "config.json"), Config.JSON);
         Util.config.save();
 
-
-
         GeneratorsManager.init();
         IslandManager.init();
 
