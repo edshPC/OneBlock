@@ -22,10 +22,6 @@
             <id>jitpack.io</id>
             <url>https://www.jitpack.io</url>
         </repository>
-        <repository>
-            <id>SRegionProtector-master</id>
-            <url>https://raw.github.com/SergeyDertan/SRegionProtector/mvn-repo/</url>
-        </repository>
     </repositories>
          
     <dependencies>
@@ -51,7 +47,8 @@
             <groupId>sergeydertan.sregionprotector</groupId>
             <artifactId>SRegionProtector</artifactId>
             <version>LATEST</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${server.directory}/plugins/PNXRegionProtector-30.0.jar</systemPath>
         </dependency>
     </dependencies>
 

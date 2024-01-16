@@ -1,36 +1,23 @@
 package edsh.oneblock.util;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Supplier;
 
-public class WeightedRandomBag<T> {
+public class WeightedRandomBag<T> implements Supplier<T> {
 
-    private class Entry {
-        double accumulatedWeight;
-        T object;
-    }
-
-    private final List<Entry> entries = new LinkedList<>();
-    private double accumulatedWeight;
-    private final Random rand = new Random();
+    private final NavigableMap<Double, T> map = new TreeMap<>();
+    private final Random random = new Random();
+    private double total = 0;
 
     public void addEntry(T object, double weight) {
-        accumulatedWeight += weight;
-        Entry e = new Entry();
-        e.object = object;
-        e.accumulatedWeight = accumulatedWeight;
-        entries.add(e);
+        if (weight <= 0) return;
+        total += weight;
+        map.put(total, object);
     }
 
-    public T getRandom() {
-        double r = rand.nextDouble() * accumulatedWeight;
-
-        for (Entry entry: entries) {
-            if (entry.accumulatedWeight >= r) {
-                return entry.object;
-            }
-        }
-        return null; //should only happen when there are no entries
+    @Override
+    public T get() {
+        double value = random.nextDouble() * total;
+        return map.higherEntry(value).getValue();
     }
 }

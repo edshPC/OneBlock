@@ -7,19 +7,12 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.player.*;
 import edsh.oneblock.OneBlockPlugin;
-import edsh.oneblock.gen.BlockGenerator;
 import edsh.oneblock.gen.GeneratorsManager;
 import edsh.oneblock.island.IslandManager;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 public class EventListener implements Listener {
-    private final OneBlockPlugin plugin;
-
-    public EventListener(OneBlockPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreak(BlockBreakEvent event) {
@@ -31,7 +24,7 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player pl = event.getPlayer();
         if(!IslandManager.tryLoadPlayerIsland(pl)) {
-            pl.sendMessage("§dУ вас нет своего острова! Напиши /is create чтобы создать его или скажи другу чтобы пригласил к себя!");
+            pl.sendMessage("§dУ вас нет своего острова! Напиши §b/is create §dчтобы создать его или скажи другу чтобы пригласил к себя!");
         }
     }
 

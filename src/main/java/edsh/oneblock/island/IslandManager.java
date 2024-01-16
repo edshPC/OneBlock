@@ -86,7 +86,7 @@ public class IslandManager {
         var regionManager = SRegionProtectorMain.getInstance().getRegionManager();
         regionManager.createRegion(
                 "island #" + island.getId(),
-                pl.getName(),
+                pl,
                 pos.add(-999, 0, -999).setY(-64),
                 pos.add(999, 0, 999).setY(319),
                 pos.getLevel()
@@ -118,10 +118,10 @@ public class IslandManager {
         var regionManager = SRegionProtectorMain.getInstance().getRegionManager();
         Region region = regionManager.getRegion("island #" + island.getId());
         if (island.removePlayer(pl.getUniqueId())) {
-            regionManager.removeRegion(region);
+            if (region != null) regionManager.removeRegion(region);
             islands.remove(island.getId());
             island.unload();
-        } else if(region.isMember(pl.getName())) regionManager.removeMember(region, pl.getName());
+        } else if (region != null && region.isMember(pl)) regionManager.removeMember(region, pl);
 
         Util.savePlayer(pl, -1);
         return true;
@@ -167,10 +167,8 @@ public class IslandManager {
         pl.sendMessage("§b/is home §aчтобы попасть на остров");
 
         var regionManager = SRegionProtectorMain.getInstance().getRegionManager();
-        regionManager.addMember(
-                regionManager.getRegion("island #" + is.getId()),
-                pl.getName()
-        );
+        Region region = regionManager.getRegion("island #" + is.getId());
+        if (region != null) regionManager.addMember(region, pl);
     }
 
 }

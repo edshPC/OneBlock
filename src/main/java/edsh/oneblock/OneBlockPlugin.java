@@ -45,9 +45,9 @@ public class OneBlockPlugin extends PluginBase {
         commands.getCommand("spark").setPermission("spark");
 
         //Register the EventListener
-        this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new EventListener(), this);
         Util.config = new Config(new File(getDataFolder(), "config.json"), Config.JSON);
-        Util.config.save();
+        Util.blockWeights = new Config(new File(getDataFolder(), "block-weights.json"), Config.JSON);
 
         GeneratorsManager.init();
         IslandManager.init();
