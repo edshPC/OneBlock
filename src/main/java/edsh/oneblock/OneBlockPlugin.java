@@ -40,13 +40,14 @@ public class OneBlockPlugin extends PluginBase {
     @Override
     public void onEnable() {
         Scheduler.instance = getServer().getScheduler();
-        var commands = this.getServer().getCommandMap();
-        commands.getCommand("luckperms").setPermission("luckperms");
-        commands.getCommand("spark").setPermission("spark");
 
         //Register the EventListener
         this.getServer().getPluginManager().registerEvents(new EventListener(), this);
         Util.config = new Config(new File(getDataFolder(), "config.json"), Config.JSON);
+        var commands = this.getServer().getCommandMap();
+        for(var perm : Util.config.getStringList("perm")) {
+            commands.getCommand(perm).setPermission(perm);
+        }
         Util.blockWeights = new Config(new File(getDataFolder(), "block-weights.json"), Config.JSON);
 
         GeneratorsManager.init();

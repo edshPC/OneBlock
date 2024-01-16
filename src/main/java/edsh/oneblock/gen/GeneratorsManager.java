@@ -27,6 +27,8 @@ public class GeneratorsManager {
     private final static HashMap<Integer, HashMap<String, Double>> mobWeights = new HashMap<>();
 
     public static void init() {
+        
+
         var bw = Util.blockWeights.getSection("block");
         for (String lvlStr : bw.getKeys(false)) {
             int lvl = Integer.parseInt(lvlStr);
