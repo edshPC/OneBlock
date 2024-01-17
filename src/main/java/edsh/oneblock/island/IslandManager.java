@@ -87,8 +87,8 @@ public class IslandManager {
         regionManager.createRegion(
                 "island #" + island.getId(),
                 pl,
-                pos.add(-999, 0, -999).setY(-64),
-                pos.add(999, 0, 999).setY(319),
+                pos.add(-400, 0, -400).setY(-64),
+                pos.add(400, 0, 400).setY(319),
                 pos.getLevel()
         );
 

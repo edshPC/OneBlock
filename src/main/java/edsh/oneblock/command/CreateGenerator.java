@@ -1,5 +1,7 @@
 package edsh.oneblock.command;
 
+import Sergey_Dertan.SRegionProtector.Main.SRegionProtectorMain;
+import Sergey_Dertan.SRegionProtector.Region.Region;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.PluginCommand;
 import cn.nukkit.command.data.CommandParamType;
@@ -12,6 +14,7 @@ import cn.nukkit.math.Vector3;
 import edsh.oneblock.gen.BlockGenerator;
 import edsh.oneblock.OneBlockPlugin;
 import edsh.oneblock.gen.GeneratorsManager;
+import edsh.oneblock.util.Util;
 
 import java.util.Map;
 
@@ -70,9 +73,24 @@ public class CreateGenerator extends PluginCommand<OneBlockPlugin> {
     @Override
     public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
         var list = result.getValue();
-        //getPlugin().getLogger().info(list.getResult(0).getClass().getName());
-        Vector3 pos = list.getResult(0);
-        Level level = sender.getPosition().level;
+
+//        var manager = SRegionProtectorMain.getInstance().getRegionManager();
+//        var regions = manager.getRegions();
+//        for (var oldReg : regions.values()) {
+//            if(!oldReg.getName().startsWith("island")) continue;
+//            manager.removeRegion(oldReg);
+//            manager.createRegion(
+//                    oldReg.getName(),
+//                    oldReg.getCreator(),
+//                    oldReg.getMin().add(600, 0, 600),
+//                    oldReg.getMax().add(-600, 0, -600),
+//                    Util.server.getLevelByName(oldReg.getLevel())
+//            );
+//
+//            oldReg.getMembers().forEach(m -> manager.addMember(oldReg, m));
+//        }
+//
+//        manager.save(SRegionProtectorMain.SaveType.MANUAL);
 
         return 1;
     }

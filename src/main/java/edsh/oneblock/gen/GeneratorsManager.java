@@ -1,16 +1,11 @@
 package edsh.oneblock.gen;
 
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockChest;
 import cn.nukkit.block.BlockID;
-import cn.nukkit.entity.Entity;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.NBTIO;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.ConfigSection;
 import edsh.oneblock.island.Island;
 import edsh.oneblock.util.Scheduler;
@@ -27,7 +22,6 @@ public class GeneratorsManager {
     private final static HashMap<Integer, HashMap<String, Double>> mobWeights = new HashMap<>();
 
     public static void init() {
-        
 
         var bw = Util.blockWeights.getSection("block");
         for (String lvlStr : bw.getKeys(false)) {
