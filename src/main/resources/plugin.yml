@@ -2,14 +2,14 @@
 name: OneBlock
 main: edsh.oneblock.OneBlockPlugin
 #remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
-version: "1.0.0"
+version: "${pom.version}"
 api: ["1.0.0"]
 load: POSTWORLD
 author: edshPC
 # Authors and author will be added together in one list.
 authors: ["edshPC"]
 description: OneBlock plugin
-website: https://github.com/PowerNukkitX/ExamplePlugin-Maven
+website: https://github.com/edshPC/OneBlock
 # These dependencies are required for the plugin to start.
 depend: ["EssentialsNK"]
 # These dependencies are not required.

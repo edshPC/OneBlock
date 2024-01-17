@@ -35,14 +35,20 @@ public class BlockGenerator {
     public Block setBlock() {
         currentBlock = blockWeights.get().getBlock();
         level.setBlock(position, currentBlock, true, false);
-        if(currentBlock instanceof BlockChest blockChest) {
+        if (currentBlock instanceof BlockChest blockChest) {
             blockChest.position(position);
             blockChest.getOrCreateBlockEntity().getRealInventory()
                     .setContents(chestDataWeights.get());
         }
 
-        String mob = mobWeights.get();
-        if(!mob.isEmpty()) Entity.createEntity(mob, position.add(0, 1)).spawnToAll();
+        String[] mob = mobWeights.get().split(":");
+
+        if (mob[0].isEmpty()) return currentBlock;
+        Entity entity = Entity.createEntity(mob[0], position.add(0, 1));
+        if (entity != null) {
+            if (mob.length > 1) entity.setNameTag(mob[1]);
+            entity.spawnToAll();
+        }
 
         return currentBlock;
     }
@@ -53,13 +59,13 @@ public class BlockGenerator {
             pl.breakingBlockFace = BlockFace.UP;
         }, 0);
 
-        if(island.isOnline(pl)) island.increaseXp();
+        if (island.isOnline(pl)) island.increaseXp();
     }
 
     public void update() {
-        if(!position.getChunk().isLoaded()) return;
+        if (!position.getChunk().isLoaded()) return;
         Block inWorld = position.getLevelBlock();
-        if(!Block.equals(currentBlock, inWorld) && !inWorld.isSolid()) {
+        if (!Block.equals(currentBlock, inWorld) && !inWorld.isSolid()) {
             setBlock();
         }
     }
